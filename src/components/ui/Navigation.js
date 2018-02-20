@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import './Navigation.css'
+import style from "../../styles/Navigation"
 //import signOut from '../../actions/user/sign-out'
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, Button } from 'reactstrap'
 
@@ -45,8 +47,8 @@ class Navigation extends PureComponent {
   render() {
     const { signedIn } = this.props
     return (
-      <div>
-        <Navbar color="faded" light>
+      <div className="Navigation">
+        <Navbar style={style.navigationStyle} color="faded" dark>
           <NavbarBrand href="/" className="mr-auto">{TITLE}</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse isOpen={!this.state.collapsed} navbar>
