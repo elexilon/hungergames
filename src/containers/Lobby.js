@@ -2,13 +2,15 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
-
-import './Lobby.css'
+import Title from '../components/ui/Title'
+import { Container, Row } from 'reactstrap'
+import fetchGames from '../actions/game/fetch'
+import GameCard from '../components/game/GameCard'
 
 class Lobby extends PureComponent {
   componentWillMount() {
-    // this.props.fetchGames()
     this.props.subscribeToWebsocket()
+    this.props.fetchGames()
   }
 
   goToGame = gameId => event => this.props.push(`/play/${gameId}`)
@@ -19,32 +21,31 @@ class Lobby extends PureComponent {
       .indexOf(this.props.currentUser._id) >= 0
   }
 
-  renderGame = (game, index) => {
-
-    // if (!game.players[0].name) { this.props.fetchPlayers(game) }
-    // const title = game.players.map(p => (p.name || null))
-    //   .filter(n => !!n)
-    //   .join(' vs ')
-    //
-    // return (
-    //   <MenuItem
-    //     key={index}
-    //     onClick={this.goToGame(game._id)}
-    //     rightIcon={<ActionIcon />}
-    //     primaryText={title} />
-    // )
+  renderGame = (game) => {
+    return (
+      <GameCard
+        playerNumber={ game.players.length }
+        starts={ game.starts_at }
+        ends={ game.ends_at }
+        urlPic={ game.urlPic }
+        id={ game._id }
+      />
+    )
   }
 
   render() {
+    const { games } = this.props
     return (
-      <div className="Lobby">
-        <h1>Lobby!</h1>
-        
-      </div>
+      <Container className="Lobby">
+        <Title content={"Your Games!"} />
+        <Row>
+          { !games ? null : games.map(game => this.renderGame(games)) }
+        </Row>
+      </Container>
     )
   }
 }
 
 const mapStateToProps = ({ games, currentUser }) => ({ games, currentUser })
 
-export default connect(mapStateToProps, { subscribeToWebsocket, push })(Lobby)
+export default connect(mapStateToProps, { subscribeToWebsocket, push, fetchGames })(Lobby)
