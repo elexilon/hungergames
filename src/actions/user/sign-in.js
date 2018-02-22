@@ -15,7 +15,6 @@ const api = new API()
 export default ({ email, password}) => {
   return dispatch => {
     dispatch({ type: APP_LOADING })
-
     api.authenticate(email, password)
       .then((res) => {
         dispatch({ type: APP_DONE_LOADING })

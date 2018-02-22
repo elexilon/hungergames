@@ -7,7 +7,7 @@ import { Container, Row, Col,
         Button, Form, FormGroup, Label, Input, FormFeedback, Card
 } from 'reactstrap'
 
-
+import validate from 'validate.js'
 
 export class SignUp extends PureComponent {
   static propTypes = {
@@ -19,11 +19,11 @@ export class SignUp extends PureComponent {
 
   submitForm(event) {
     event.preventDefault()
-    if (this.validateAll()) {
+    const {email, password, passwordConfirmation} = this.state
+    if (this.validateAll(email, password, passwordConfirmation)) {
       const user = {
-        name: this.refs.name.getValue(),
-        email: this.refs.email.getValue(),
-        password: this.refs.password.getValue()
+        email: email,
+        password: password
       }
       this.props.signUp(user)
     }
@@ -34,93 +34,83 @@ export class SignUp extends PureComponent {
     this.props.push('/sign-in')
   }
 
-  validateAll() {
-    return this.validateName() &&
-      this.validateEmail() &&
-      this.validatePassword() &&
-      this.validatePasswordConfirmation()
-  }
-
-  validateName() {
-    const { name } = this.refs
-
-    if (name.getValue().length > 1) {
-      this.setState({
-        nameError: null
-      })
-      return true
-    }
-
-    this.setState({
-      nameError: 'Please provide your name'
-    })
-    return false
+  validateAll(email, password, passwordConfirmation) {
+    return this.validateEmail(email) &&
+      this.validatePassword(password) &&
+      this.validatePasswordConfirmation(passwordConfirmation)
   }
 
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
+    switch (name) {
+      case 'email':
+        this.validateEmail(event.target.value)
+        break
+      case 'password':
+        this.validatePassword(event.target.value)
+        break
+      case 'passwordConfirmation':
+        this.validatePasswordConfirmation(event.target.value)
+        break
+      default:
+        return false
+    }
   }
 
-  validateEmail(event) {
-    const email = event.target.value
-    console.log(email)
-    // if (email.getValue().match(/^[a-z0-9._-]+@[a-z0-9._-]+.[a-z0-9._-]+$/)) {
-    //   this.setState({
-    //     emailError: null
-    //   })
-    //   return true
-    // }
-    //
-    // if (email.value === '') {
-    //   this.setState({
-    //     emailError: 'Please provide your email address'
-    //   })
-    //   return false
-    // }
-    //
-    // this.setState({
-    //   emailError: 'Please provide a valid email address'
-    // })
-    // return false
-  }
-
-  validatePassword() {
-    const { password } = this.refs
-
-    if (password.getValue().length < 6) {
+  validateEmail(email) {
+    const validationMsg = validate.single(email, {
+      presence: true,
+      email: true
+    })
+    if (!!validationMsg && email.length > 0) {
       this.setState({
-        passwordError: 'Password is too short'
+        emailError: validationMsg
       })
       return false
     }
 
-    if (password.getValue().match(/[a-zA-Z]+/) && password.getValue().match(/[0-9]+/)) {
-      this.setState({
-        passwordError: null
-      })
-      return true
-    }
-
     this.setState({
-      passwordError: 'Password should contain both letters and numbers'
+      emailError: null
     })
-    return false
+    return true
   }
 
-  validatePasswordConfirmation() {
-    const { password, passwordConfirmation } = this.refs
+  validatePassword(password) {
+    const validationMsg = validate.single(password, {
+      presence: true,
+      length: {
+        minimum: 6,
+        message: 'must be at least 6 characters'
+      }
+    })
 
-    if (password.value === passwordConfirmation.value) {
+    if (!!validationMsg) {
       this.setState({
-        passwordConfirmationError: null
+        passwordError: validationMsg
       })
-      return true
+      return false
     }
 
     this.setState({
-      passwordConfirmationError: 'Passwords do not match'
+      passwordError: null
     })
-    return false
+    return true
+  }
+
+  validatePasswordConfirmation(passwordConfirmation) {
+    const { password } = this.state
+
+    if (passwordConfirmation !== password && password.length > 5) {
+      this.setState({
+        passwordConfirmationError: 'password confirmation is different'
+      })
+      return false
+    }
+
+    this.setState({
+      passwordConfirmationError: null
+    })
+    return true
   }
 
   render() {
@@ -134,7 +124,7 @@ export class SignUp extends PureComponent {
                 <FormGroup row>
                 <Label for="email" sm={4}>Email</Label>
                 <Col sm={8}>
-                  <Input valid={null}
+                  <Input valid={ !this.state.emailError ? null : false }
                     type="email"
                     name="email" id="email" placeholder="Email"
                     onChange={this.handleChange("email").bind(this)}
@@ -146,10 +136,10 @@ export class SignUp extends PureComponent {
                 <FormGroup row>
                 <Label for="password" sm={4}>Password</Label>
                 <Col sm={8}>
-                  <Input valid={null}
+                  <Input valid={ !this.state.passwordError ? null : false }
                     type="password"
                     name="password" id="password" placeholder="Password"
-                    onChange={this.handleChange("password").bind(this)}
+                    onChange={ this.handleChange("password").bind(this) }
                    />
                   <FormFeedback >{ this.state.passwordError }</FormFeedback>
                 </Col>
@@ -158,17 +148,27 @@ export class SignUp extends PureComponent {
                 <FormGroup row>
                 <Label for="passwordConfirmation" sm={4}>Password Confirmation</Label>
                 <Col sm={8}>
-                  <Input valid={null}
-                    type="passwordConfirmation"
-                    name="passwordConfirmation" id="passwordConfirmation" placeholder="Password Confirmation"
-                    onChange={this.handleChange("passwordConfirmation").bind(this)}
+                  <Input
+                    valid={
+                      !this.state.passwordConfirmationError ? null : false
+                    }
+                    type="password"
+                    name="passwordConfirmation" id="passwordConfirmation"
+                    placeholder="Password Confirmation"
+                    onChange={
+                      this.handleChange("passwordConfirmation").bind(this)
+                    }
                    />
                   <FormFeedback >{ this.state.passwordConfirmationError }</FormFeedback>
                 </Col>
                 </FormGroup>
 
                 <Button type="submit" color="success" >Sign Up</Button>
-                <Button outline color="primary" >Sign In</Button>
+                <Button
+                  outline
+                  color="primary"
+                  onClick={ this.signIn.bind(this) }
+                  >Sign In</Button>
 
               </Col>
             </Row>

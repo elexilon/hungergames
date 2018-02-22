@@ -4,8 +4,10 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import './Navigation.css'
 import style from "../../styles/Navigation"
-//import signOut from '../../actions/user/sign-out'
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, Button } from 'reactstrap'
+import signOut from '../../actions/user/sign-out'
+import { Collapse, Navbar, NavbarToggler,
+  NavbarBrand, Nav, NavItem, Button
+} from 'reactstrap'
 
 const TITLE = 'Hunger Games'
 
@@ -55,7 +57,9 @@ class Navigation extends PureComponent {
             <Nav navbar>
               <NavItem>
               {signedIn ?
-                <Button color="link" onClick={this.signOut.bind(this)} >signOut</Button> :
+                <Button color="link" onClick={this.signOut.bind(this)} >
+                  signOut
+                </Button> :
                 <Button color="link" onClick={this.signUp} >signUp</Button> }
               </NavItem>
               <NavItem>
@@ -73,4 +77,4 @@ const mapStateToProps = ({ currentUser }) => ({
   signedIn: (!!currentUser && !!currentUser._id)
 })
 
-export default connect(mapStateToProps, { push })(Navigation)
+export default connect(mapStateToProps, { push, signOut })(Navigation)
