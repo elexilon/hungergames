@@ -18,7 +18,3 @@ export default class Routes extends Component {
     )
   }
 }
-
-// <Route path="/play/:gameId" component={Game} />
-// <Route path="/sign-in" component={SignIn} />
-// <Route path="/sign-up" component={SignUp} />
