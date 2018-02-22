@@ -32,8 +32,8 @@ class Navigation extends PureComponent {
     this.props.signOut()
   }
 
-  signUp = () => {
-    this.props.push('/sign-up')
+  signIn = () => {
+    this.props.push('/sign-in')
   }
 
   goHome = () => {
@@ -44,6 +44,14 @@ class Navigation extends PureComponent {
     this.setState({
       collapsed: !this.state.collapsed
     });
+  }
+
+  renderButton() {
+    return (
+      <Button color="link" onClick={this.signOut.bind(this)} >
+        sign Out
+      </Button>
+    )
   }
 
   render() {
@@ -57,14 +65,10 @@ class Navigation extends PureComponent {
             <Nav navbar>
               <NavItem>
               {signedIn ?
-                <Button color="link" onClick={this.signOut.bind(this)} >
-                  signOut
-                </Button> :
-                <Button color="link" onClick={this.signUp} >signUp</Button> }
+                 this.renderButton() :
+                <Button color="link" onClick={this.signIn} >sign In</Button> }
               </NavItem>
-              <NavItem>
-                <Button color="link" onClick={this.signUp} >signIn</Button>
-              </NavItem>
+
             </Nav>
           </Collapse>
         </Navbar>

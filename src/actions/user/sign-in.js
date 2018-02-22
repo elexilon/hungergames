@@ -12,7 +12,7 @@ export const USER_SIGNED_IN = 'USER_SIGNED_IN'
 
 const api = new API()
 
-export default ({ email, password}) => {
+export default ({ email, password }) => {
   return dispatch => {
     dispatch({ type: APP_LOADING })
     api.authenticate(email, password)

@@ -6,7 +6,7 @@ import signIn from '../actions/user/sign-in'
 import { Container, Row, Col,
         Button, Form, FormGroup, Label, Input, FormFeedback, Card
 } from 'reactstrap'
-
+import Title from '../components/ui/Title'
 import validate from 'validate.js'
 
 export class SignIn extends PureComponent {
@@ -60,6 +60,7 @@ export class SignIn extends PureComponent {
   render() {
     return (
       <Container>
+        <Title content={"Sign In"} />
         <Card body>
           <Form onSubmit={this.submitForm.bind(this)}>
             <Row>
