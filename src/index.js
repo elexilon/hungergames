@@ -7,12 +7,15 @@ import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
+import HttpsRedirect from 'react-https-redirect'
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
-      <App />
-    </Router>
+    <HttpsRedirect>
+      <Router history={history}>
+        <App />
+      </Router>
+    </HttpsRedirect>
   </Provider>, document.getElementById('root'))
 
 registerServiceWorker()
