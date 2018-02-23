@@ -7,7 +7,7 @@ export default class ApiClient {
 
   constructor(host, options = {}) {
     this.host = process.env.NODE_ENV === 'production'
-      ? 'https://api.l2elexilon.com' // WITHOUT the / !!!
+      ? 'http://api.l2elexilon.com' // WITHOUT the / !!!
       : (host || 'http://localhost:4030')
 
     this.options = { ...this.defaultOptions, ...options }
