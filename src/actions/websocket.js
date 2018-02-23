@@ -21,6 +21,8 @@ export const connect = () => {
     }
 
     socket = io.connect(api.host, {
+      reconnect: true,
+      transports: ['websocket', 'polling'],
       query: {
         auth_token: api.getToken()
       }
