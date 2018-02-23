@@ -63,7 +63,7 @@ export class SignUp extends PureComponent {
       email: true
     })
 
-    if (!!validationMsg && !!email && email.length > 0) {
+    if (!!validationMsg) {
       this.setState({
         emailError: validationMsg
       })

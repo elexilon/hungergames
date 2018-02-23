@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { connect as subscribeToWebsocket } from '../actions/websocket'
 import Title from '../components/ui/Title'
 import { Container, Row } from 'reactstrap'
 import fetchGames from '../actions/game/fetch'
 import GameCard from '../components/game/GameCard'
+import { Authenticated } from '../actions/user/sign-in'
 
 class Lobby extends PureComponent {
   componentWillMount() {
-    this.props.subscribeToWebsocket()
+    this.props.Authenticated()
     this.props.fetchGames()
   }
 
@@ -48,4 +48,4 @@ class Lobby extends PureComponent {
 
 const mapStateToProps = ({ games, currentUser }) => ({ games, currentUser })
 
-export default connect(mapStateToProps, { subscribeToWebsocket, push, fetchGames })(Lobby)
+export default connect(mapStateToProps, { Authenticated, push, fetchGames })(Lobby)

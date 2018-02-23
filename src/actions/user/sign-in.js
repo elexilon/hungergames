@@ -1,12 +1,13 @@
 import { replace } from 'react-router-redux'
 import API from '../../api/client'
+import { push } from 'react-router-redux'
 import {
   APP_LOADING,
   APP_DONE_LOADING,
   LOAD_ERROR,
-  LOAD_SUCCESS
+  LOAD_SUCCESS,
+  AUTH_ERROR
 } from '../loading'
-import websocket from '../websocket'
 
 export const USER_SIGNED_IN = 'USER_SIGNED_IN'
 
@@ -23,8 +24,6 @@ export default ({ email, password }) => {
         const jwt = res.body.token
         api.storeToken(jwt)
         dispatch(replace('/'))
-        dispatch(websocket.connect())
-
         return api.get('/users/me')
       })
       .then((res) => {
@@ -40,5 +39,15 @@ export default ({ email, password }) => {
           payload: error.message
         })
       })
+  }
+}
+
+export const Authenticated = () => {
+  return dispatch => {
+    if (!api.isAuthenticated()) {
+      dispatch({ type: AUTH_ERROR })
+      dispatch(push('/sign-in'))
+      return
+    }
   }
 }
