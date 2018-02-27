@@ -8,6 +8,7 @@ import signOut from '../../actions/user/sign-out'
 import { Collapse, Navbar, NavbarToggler,
   NavbarBrand, Nav, NavItem, Button
 } from 'reactstrap'
+import ModalDialog from './ModalDialog'
 
 const TITLE = 'Hunger Games'
 
@@ -17,7 +18,8 @@ class Navigation extends PureComponent {
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
+      modal: false,
     };
   }
 
@@ -30,6 +32,12 @@ class Navigation extends PureComponent {
   signOut = (event) => {
     event.preventDefault()
     this.props.signOut()
+  }
+
+  newGame = (event) => {
+    this.setState({
+      modal: true
+    })
   }
 
   signIn = () => {
@@ -46,32 +54,48 @@ class Navigation extends PureComponent {
     });
   }
 
-  renderButton() {
+  renderSignedInButtons() {
     return (
-      <Button color="link" onClick={this.signOut.bind(this)} >
-        sign Out
-      </Button>
+      <Nav navbar>
+        <NavItem>
+          <Button color="link" onClick={this.newGame.bind(this)} >
+            New Game
+          </Button>
+        </NavItem>
+        <NavItem>
+          <Button color="link" onClick={this.signOut.bind(this)} >
+            sign Out
+          </Button>
+        </NavItem>
+      </Nav>
+    )
+  }
+
+  renderSignedOutButtons() {
+    return (
+      <Nav navbar>
+        <NavItem>
+          <Button color="link" onClick={this.signIn} >sign In</Button>
+        </NavItem>
+      </Nav>
     )
   }
 
   render() {
     const { signedIn } = this.props
+    const { modal } = this.state
+
     return (
       <div className="Navigation">
         <Navbar style={style.navigationStyle} color="faded" dark>
           <NavbarBrand href="/" className="mr-auto">{TITLE}</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse isOpen={!this.state.collapsed} navbar>
-            <Nav navbar>
-              <NavItem>
-              {signedIn ?
-                 this.renderButton() :
-                <Button color="link" onClick={this.signIn} >sign In</Button> }
-              </NavItem>
-
-            </Nav>
+            { signedIn ? this.renderSignedInButtons() :
+              this.renderSignedOutButtons() }
           </Collapse>
         </Navbar>
+        <ModalDialog isOpen={ modal } />
       </div>
     )
   }
