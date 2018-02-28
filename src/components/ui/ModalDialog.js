@@ -1,48 +1,39 @@
 import React from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { GameForm } from '../../containers'
+import { Modal, ModalHeader, ModalBody } from 'reactstrap'
+
+import { connect } from 'react-redux'
+import { closeModal } from '../../actions/modal'
 
 class ModalDialog extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      modal: false
-    }
 
     this.toggle = this.toggle.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const { isOpen } = nextProps
-      this.setState({ modal: isOpen })
-  }
-
   toggle() {
-    this.setState({
-      modal: !this.state.modal
-    })
+    this.props.closeModal()
   }
 
   render() {
 
+    const { modal, body, title  } = this.props
 
     return (
       <div>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+        <Modal isOpen={modal} toggle={this.toggle} className={this.props.className}>
+          <ModalHeader toggle={this.toggle}>{title}</ModalHeader>
           <ModalBody>
-
-          <GameForm />
-
+          { body }
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-          </ModalFooter>
         </Modal>
       </div>
     )
   }
 }
 
-export default ModalDialog
+const mapStateToProps = ({ modal }) => ({
+  modal
+})
+
+export default connect(mapStateToProps, { closeModal })(ModalDialog)

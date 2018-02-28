@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import signUp from '../actions/user/sign-up'
 import { Container, Row, Col,
-        Button, Form, FormGroup, Label, Input, FormFeedback, Card
+        Button, Form, FormGroup, Label, Input, FormFeedback
 } from 'reactstrap'
-import Title from '../components/ui/Title'
 import validate from 'validate.js'
 import Dropzone from 'react-dropzone'
 import request from 'superagent'
@@ -150,27 +149,26 @@ onImageDrop(files) {
 
     return (
       <Container>
-        <Title content={"Sign Up"} />
-        <Card body>
           <Form onSubmit={this.submitForm.bind(this)}>
             <Row>
-              <Col sm="12" md={{ size: 8, offset: 2 }}>
+              <Col sm="12">
 
-              <Dropzone
-                style={{ float: 'left', width: 300, height: 300 }}
-                multiple={false}
-                accept="image/*"
-                onDrop={this.onImageDrop.bind(this)}
-              >
-                {picUrl === '' ? (
-                  <p>Drop an image or click to select a file to upload.</p>
-                ) : (
-                    <div>
-                      <img src={picUrl} alt="" />
-                    </div>
-                  )}
-              </Dropzone>
-
+              <FormGroup row>
+                <Dropzone
+                  style={{ float: 'left', width: 300, height: 300 }}
+                  multiple={false}
+                  accept="image/*"
+                  onDrop={this.onImageDrop.bind(this)}
+                >
+                  {picUrl === '' || !picUrl ? (
+                    <p>Drop an image or click to select a file to upload.</p>
+                  ) : (
+                      <div>
+                        <img src={picUrl} alt="" />
+                      </div>
+                    )}
+                </Dropzone>
+              </FormGroup>
 
                 <FormGroup row>
                 <Label for="email" sm={4}>Email</Label>
@@ -224,7 +222,6 @@ onImageDrop(files) {
               </Col>
             </Row>
           </Form>
-        </Card>
       </Container>
     )
   }

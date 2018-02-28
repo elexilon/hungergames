@@ -9,6 +9,8 @@ import { Collapse, Navbar, NavbarToggler,
   NavbarBrand, Nav, NavItem, Button
 } from 'reactstrap'
 import ModalDialog from './ModalDialog'
+import { openModal } from '../../actions/modal'
+import { GameForm } from '../../containers'
 
 const TITLE = 'Hunger Games'
 
@@ -21,6 +23,7 @@ class Navigation extends PureComponent {
       collapsed: true,
       modal: false,
     };
+
   }
 
   static propTypes = {
@@ -35,10 +38,10 @@ class Navigation extends PureComponent {
   }
 
   newGame = (event) => {
-    this.setState({
-      modal: true
-    })
+    this.props.openModal()
   }
+
+
 
   signIn = () => {
     this.props.push('/sign-in')
@@ -51,7 +54,7 @@ class Navigation extends PureComponent {
   toggleNavbar() {
     this.setState({
       collapsed: !this.state.collapsed
-    });
+    })
   }
 
   renderSignedInButtons() {
@@ -82,8 +85,7 @@ class Navigation extends PureComponent {
   }
 
   render() {
-    const { signedIn } = this.props
-    const { modal } = this.state
+    const { signedIn, modal } = this.props
 
     return (
       <div className="Navigation">
@@ -95,14 +97,15 @@ class Navigation extends PureComponent {
               this.renderSignedOutButtons() }
           </Collapse>
         </Navbar>
-        <ModalDialog isOpen={ modal } />
+        <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
       </div>
     )
   }
 }
 
-const mapStateToProps = ({ currentUser }) => ({
-  signedIn: (!!currentUser && !!currentUser._id)
+const mapStateToProps = ({ currentUser, modal }) => ({
+  signedIn: (!!currentUser && !!currentUser._id),
+  modal
 })
 
-export default connect(mapStateToProps, { push, signOut })(Navigation)
+export default connect(mapStateToProps, { push, signOut, openModal })(Navigation)
