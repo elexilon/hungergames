@@ -97,6 +97,7 @@ class Navigation extends PureComponent {
               this.renderSignedOutButtons() }
           </Collapse>
         </Navbar>
+        
         <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
       </div>
     )

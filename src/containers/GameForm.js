@@ -146,78 +146,88 @@ onImageDrop(files) {
     const {
       picUrl
     } = this.state
-
     return (
       <Container>
           <Form onSubmit={this.submitForm.bind(this)}>
             <Row>
               <Col sm="12">
 
-              <FormGroup row>
-                <Dropzone
-                  style={{ float: 'left', width: 300, height: 300 }}
-                  multiple={false}
-                  accept="image/*"
-                  onDrop={this.onImageDrop.bind(this)}
-                >
-                  {picUrl === '' || !picUrl ? (
-                    <p>Drop an image or click to select a file to upload.</p>
-                  ) : (
-                      <div>
-                        <img src={picUrl} alt="" />
-                      </div>
-                    )}
-                </Dropzone>
-              </FormGroup>
-
                 <FormGroup row>
-                <Label for="email" sm={4}>Email</Label>
-                <Col sm={8}>
-                  <Input valid={ !this.state.emailError ? null : false }
-                    type="email"
-                    name="email" id="email" placeholder="Email"
-                    onChange={this.handleChange("email").bind(this)}
-                   />
-                  <FormFeedback >{ this.state.emailError }</FormFeedback>
-                </Col>
+                  <Dropzone
+                    style={{ "backgroundColor": "light", width: "auto", height: 300 }}
+                    multiple={false}
+                    accept="image/*"
+                    onDrop={this.onImageDrop.bind(this)}
+                  >
+                    {picUrl === '' || !picUrl ? (
+                      <p>Drop an image or click to select a file to upload.</p>
+                    ) : (
+                        <div>
+                          <img src={picUrl} alt="" />
+                        </div>
+                      )}
+                  </Dropzone>
                 </FormGroup>
 
                 <FormGroup row>
-                <Label for="password" sm={4}>Password</Label>
-                <Col sm={8}>
-                  <Input valid={ !this.state.passwordError ? null : false }
-                    type="password"
-                    name="password" id="password" placeholder="Password"
-                    onChange={ this.handleChange("password").bind(this) }
-                   />
-                  <FormFeedback >{ this.state.passwordError }</FormFeedback>
-                </Col>
-                </FormGroup>
-
-                <FormGroup row>
-                <Label for="passwordConfirmation" sm={4}>Password Confirmation</Label>
+                <Label for="title" sm={4}>Title</Label>
                 <Col sm={8}>
                   <Input
-                    valid={
-                      !this.state.passwordConfirmationError ? null : false
-                    }
-                    type="password"
-                    name="passwordConfirmation" id="passwordConfirmation"
-                    placeholder="Password Confirmation"
-                    onChange={
-                      this.handleChange("passwordConfirmation").bind(this)
-                    }
-                   />
-                  <FormFeedback >{ this.state.passwordConfirmationError }</FormFeedback>
+                    name="title"
+                    id="title"
+                    placeholder="Title"
+                    onChange={this.handleChange("title").bind(this)}
+                    valid={ !this.state.titleError ? null : false }
+                  />
+                <FormFeedback >{ this.state.titleError }</FormFeedback>
                 </Col>
                 </FormGroup>
 
-                <Button type="submit" color="success" >Sign Up</Button>
-                <Button
-                  outline
-                  color="primary"
-                  onClick={ this.signIn.bind(this) }
-                  >Sign In</Button>
+                <FormGroup row>
+                <Label for="description" sm={4}>Description</Label>
+                <Col sm={8}>
+                  <Input
+                    type="textarea"
+                    name="description"
+                    id="description"
+                    placeholder="Description"
+                    onChange={this.handleChange("description").bind(this)}
+                    valid={ !this.state.descriptionError ? null : false }
+                  />
+                  <FormFeedback >{ this.state.descriptionError }</FormFeedback>
+                </Col>
+                </FormGroup>
+
+                <FormGroup row>
+                <Label for="starts_at" sm={4}>Starts At</Label>
+                <Col sm={8}>
+                  <Input
+                    type="date"
+                    name="starts_at"
+                    id="starts_at"
+                    placeholder="Starts At"
+                    onChange={this.handleChange("startsAt").bind(this)}
+                    valid={ !this.state.startsAtError ? null : false }
+                  />
+                  <FormFeedback >{ this.state.startsAtError }</FormFeedback>
+                </Col>
+                </FormGroup>
+
+                <FormGroup row>
+                <Label for="ends_at" sm={4}>Ends At</Label>
+                <Col sm={8}>
+                  <Input
+                    type="date"
+                    name="ends_at"
+                    id="ends_at"
+                    placeholder="Ends At"
+                    onChange={this.handleChange("endsAt").bind(this)}
+                    valid={ !this.state.endsAtError ? null : false }
+                  />
+                  <FormFeedback >{ this.state.endsAtError }</FormFeedback>
+                </Col>
+                </FormGroup>
+                <Button type="submit" color="success" >Create</Button>
 
               </Col>
             </Row>
