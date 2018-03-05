@@ -9,6 +9,10 @@ import registerServiceWorker from './registerServiceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import HttpsRedirect from 'react-https-redirect'
 
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config()
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <HttpsRedirect>

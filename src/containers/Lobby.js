@@ -6,6 +6,12 @@ import { Container, Row } from 'reactstrap'
 import fetchGames from '../actions/game/fetch'
 import GameCard from '../components/game/GameCard'
 import { Authenticated } from '../actions/user/sign-in'
+import { Button
+} from 'reactstrap'
+import { openModal } from '../actions/modal'
+import { GameForm } from '../containers'
+import ModalDialog from '../components/ui/ModalDialog'
+import style from "../styles/Navigation"
 
 class Lobby extends PureComponent {
   componentWillMount() {
@@ -21,6 +27,10 @@ class Lobby extends PureComponent {
       .indexOf(this.props.currentUser._id) >= 0
   }
 
+  newGame = (event) => {
+    this.props.openModal()
+  }
+
   renderGame = (game) => {
     return (
       <GameCard
@@ -34,18 +44,25 @@ class Lobby extends PureComponent {
   }
 
   render() {
-    const { games } = this.props
+    const { games, modal } = this.props
     return (
       <Container className="Lobby">
         <Title content={"Your Games!"} />
+          <Button style={style.navigationStyle} onClick={this.newGame.bind(this)} >
+            New Game
+          </Button>
         <Row>
           { !games ? null : games.map(game => this.renderGame(games)) }
         </Row>
+
+        <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
       </Container>
     )
   }
 }
 
-const mapStateToProps = ({ games, currentUser }) => ({ games, currentUser })
+const mapStateToProps = ({ games, currentUser, modal }) =>
+({ games, currentUser, modal })
 
-export default connect(mapStateToProps, { Authenticated, push, fetchGames })(Lobby)
+export default connect(mapStateToProps,
+  { Authenticated, push, fetchGames, openModal })(Lobby)

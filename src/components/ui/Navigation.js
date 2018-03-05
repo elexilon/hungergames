@@ -8,9 +8,6 @@ import signOut from '../../actions/user/sign-out'
 import { Collapse, Navbar, NavbarToggler,
   NavbarBrand, Nav, NavItem, Button
 } from 'reactstrap'
-import ModalDialog from './ModalDialog'
-import { openModal } from '../../actions/modal'
-import { GameForm } from '../../containers'
 
 const TITLE = 'Hunger Games'
 
@@ -37,11 +34,6 @@ class Navigation extends PureComponent {
     this.props.signOut()
   }
 
-  newGame = (event) => {
-    this.props.openModal()
-  }
-
-
 
   signIn = () => {
     this.props.push('/sign-in')
@@ -61,9 +53,7 @@ class Navigation extends PureComponent {
     return (
       <Nav navbar>
         <NavItem>
-          <Button color="link" onClick={this.newGame.bind(this)} >
-            New Game
-          </Button>
+
         </NavItem>
         <NavItem>
           <Button color="link" onClick={this.signOut.bind(this)} >
@@ -85,7 +75,7 @@ class Navigation extends PureComponent {
   }
 
   render() {
-    const { signedIn, modal } = this.props
+    const { signedIn } = this.props
 
     return (
       <div className="Navigation">
@@ -97,8 +87,6 @@ class Navigation extends PureComponent {
               this.renderSignedOutButtons() }
           </Collapse>
         </Navbar>
-        
-        <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
       </div>
     )
   }
@@ -109,4 +97,4 @@ const mapStateToProps = ({ currentUser, modal }) => ({
   modal
 })
 
-export default connect(mapStateToProps, { push, signOut, openModal })(Navigation)
+export default connect(mapStateToProps, { push, signOut })(Navigation)

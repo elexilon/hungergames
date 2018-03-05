@@ -9,6 +9,7 @@ import { Container, Row, Col,
 import validate from 'validate.js'
 import Dropzone from 'react-dropzone'
 import request from 'superagent'
+import style from "../styles/GameForm"
 
 export class GameForm extends PureComponent {
   static propTypes = {
@@ -154,7 +155,7 @@ onImageDrop(files) {
 
                 <FormGroup row>
                   <Dropzone
-                    style={{ "backgroundColor": "light", width: "auto", height: 300 }}
+                    style={style.imgStyle}
                     multiple={false}
                     accept="image/*"
                     onDrop={this.onImageDrop.bind(this)}
@@ -163,7 +164,7 @@ onImageDrop(files) {
                       <p>Drop an image or click to select a file to upload.</p>
                     ) : (
                         <div>
-                          <img src={picUrl} alt="" />
+                          <img style={style.imgStyle} src={picUrl} alt="" />
                         </div>
                       )}
                   </Dropzone>
