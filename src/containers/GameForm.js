@@ -2,145 +2,150 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import signUp from '../actions/user/sign-up'
+// import create from '../actions/game/create'
+// import update from '../actions/game/update'
 import { Container, Row, Col,
         Button, Form, FormGroup, Label, Input, FormFeedback
 } from 'reactstrap'
 import validate from 'validate.js'
 import Dropzone from 'react-dropzone'
 import request from 'superagent'
-import style from "../styles/GameForm"
+import style from '../styles/GameForm'
+import moment from 'moment'
+
 
 export class GameForm extends PureComponent {
   static propTypes = {
     push: PropTypes.func.isRequired,
-    signUp: PropTypes.func.isRequired,
+    create: PropTypes.func.isRequired,
+    update: PropTypes.func.isRequired
   }
 
   state = {}
 
   submitForm(event) {
     event.preventDefault()
-    const {email, password, passwordConfirmation} = this.state
-    if (this.validateAll(email, password, passwordConfirmation)) {
-      const user = {
-        email: email,
-        password: password
-      }
-      this.props.signUp(user)
+
+    if (this.validateAll(this.state.title, this.state.startsAt)) {
+      if(!this.handleImageUpload(this.state.uploadedFile)) return false
     }
     return false
   }
 
-  signIn() {
-    this.props.push('/sign-in')
-  }
-
-  validateAll(email, password, passwordConfirmation) {
-    return this.validateEmail(email) &&
-      this.validatePassword(password) &&
-      this.validatePasswordConfirmation(passwordConfirmation)
+  validateAll(title, startsAt) {
+    return this.validateTitle(title) &&
+    this.validateStartsAt(startsAt)
   }
 
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
     switch (name) {
-      case 'email':
-        this.validateEmail(event.target.value)
-        break
-      case 'password':
-        this.validatePassword(event.target.value)
-        break
-      case 'passwordConfirmation':
-        this.validatePasswordConfirmation(event.target.value)
+      case 'title':
+        this.validateTitle(event.target.value)
         break
       default:
         return false
     }
   }
 
-  validateEmail(email) {
-    const validationMsg = validate.single(email, {
-      presence: true,
-      email: true
-    })
-
-    if (!!validationMsg) {
-      this.setState({
-        emailError: validationMsg
-      })
-      return false
-    }
-
-    this.setState({
-      emailError: null
-    })
-    return true
-  }
-
-  validatePassword(password) {
-    const validationMsg = validate.single(password, {
+  validateTitle(title) {
+    const validationMsg = validate.single(title, {
       presence: true,
       length: {
-        minimum: 6,
-        message: 'must be at least 6 characters'
+        minimum: 2,
+        message: 'Must be at least 2 characters'
       }
     })
 
     if (!!validationMsg) {
       this.setState({
-        passwordError: validationMsg
+        titleError: validationMsg
       })
       return false
     }
 
     this.setState({
-      passwordError: null
+      titleError: null
     })
     return true
   }
 
-  validatePasswordConfirmation(passwordConfirmation) {
-    const { password } = this.state
+  validateStartsAt(startsAt) {
 
-    if (passwordConfirmation !== password && password.length > 5) {
+    const validationMsg = validate.single(startsAt, {
+      presence: true
+    })
+
+    if (!!validationMsg) {
       this.setState({
-        passwordConfirmationError: 'password confirmation is different'
+        startsAtError: validationMsg
       })
       return false
     }
 
+    if(!validate.isDate(new Date(startsAt))){
+      this.setState({
+        startsAtError: "Must be a valid date"
+      })
+      return false
+    }
+
+
     this.setState({
-      passwordConfirmationError: null
+      startsAtError: null
+    })
+    return true
+  }
+
+  validateEndsAt(endsAt) {
+
+    const validationMsg = validate.single(endsAt, {
+      presence: true
+    })
+
+    if (!!validationMsg) {
+      this.setState({
+        startsAtError: validationMsg
+      })
+      return false
+    }
+
+    console.log(validationMsg);
+
+    this.setState({
+      startsAtError: null
     })
     return true
   }
 
   handleImageUpload(file) {
-  let upload = request
-    .post(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL)
-    .field('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-    .field('file', file)
+    if(!file) return
+    let upload = request
+      .post(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL)
+      .field('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+      .field('file', file)
 
-  upload.end((err, response) => {
-    if (err) {
-      console.error(err)
-    }
+    upload.end((err, response) => {
+      if (err) {
+        console.error(err)
+        return false
+      }
 
-    this.setState({
-      picUrl:
-        'https://res.cloudinary.com/elexilon/image/upload/h_600,w_600,c_fill,g_face/' +
-        response.body.public_id
+      this.setState({
+        picUrl:
+          'https://res.cloudinary.com/elexilon/image/upload/' +
+          response.body.public_id
+      })
     })
-  })
+    return true
 }
 
 onImageDrop(files) {
   this.setState({
-    uploadedFile: files[0]
+    uploadedFile: files[0],
+    picUrl: files[0].preview
   })
-
-  this.handleImageUpload(files[0])
+  console.log(files[0])
 }
 
   render() {
@@ -193,9 +198,7 @@ onImageDrop(files) {
                     id="description"
                     placeholder="Description"
                     onChange={this.handleChange("description").bind(this)}
-                    valid={ !this.state.descriptionError ? null : false }
                   />
-                  <FormFeedback >{ this.state.descriptionError }</FormFeedback>
                 </Col>
                 </FormGroup>
 
@@ -238,4 +241,4 @@ onImageDrop(files) {
   }
 }
 
-export default connect(null, { signUp, push })(GameForm)
+export default connect(null, { push })(GameForm)

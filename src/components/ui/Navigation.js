@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import './Navigation.css'
-import style from "../../styles/Navigation"
+import { Navigation as NavStyle, Button as ButStyle } from "../../styles"
 import signOut from '../../actions/user/sign-out'
 import { Collapse, Navbar, NavbarToggler,
   NavbarBrand, Nav, NavItem, Button
@@ -56,7 +56,7 @@ class Navigation extends PureComponent {
 
         </NavItem>
         <NavItem>
-          <Button color="link" onClick={this.signOut.bind(this)} >
+          <Button style={ButStyle.buttonStyle} onClick={this.signOut.bind(this)} >
             sign Out
           </Button>
         </NavItem>
@@ -68,7 +68,7 @@ class Navigation extends PureComponent {
     return (
       <Nav navbar>
         <NavItem>
-          <Button color="link" onClick={this.signIn} >sign In</Button>
+          <Button style={ButStyle.buttonStyle} onClick={this.signIn} >sign In</Button>
         </NavItem>
       </Nav>
     )
@@ -79,7 +79,7 @@ class Navigation extends PureComponent {
 
     return (
       <div className="Navigation">
-        <Navbar style={style.navigationStyle} color="faded" dark>
+        <Navbar style={NavStyle.navigationStyle} color="faded" dark>
           <NavbarBrand href="/" className="mr-auto">{TITLE}</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse isOpen={!this.state.collapsed} navbar>

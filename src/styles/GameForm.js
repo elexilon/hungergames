@@ -1,7 +1,7 @@
 const imgStyle = {
   "backgroundColor": "light",
-  width: "auto",
-  height: 300
+  width:  270,
+  height: 270
 }
 
 export default {
