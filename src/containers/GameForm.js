@@ -5,12 +5,16 @@ import { push } from 'react-router-redux'
 // import create from '../actions/game/create'
 // import update from '../actions/game/update'
 import { Container, Row, Col,
-        Button, Form, FormGroup, Label, Input, FormFeedback
+        Button, Form, FormGroup, FormText,
+        Label, Input, FormFeedback
 } from 'reactstrap'
 import validate from 'validate.js'
 import Dropzone from 'react-dropzone'
 import request from 'superagent'
 import style from '../styles/GameForm'
+import DatePicker from 'react-datepicker'
+import moment from 'moment'
+import 'react-datepicker/dist/react-datepicker.css'
 
 
 export class GameForm extends PureComponent {
@@ -21,7 +25,8 @@ export class GameForm extends PureComponent {
   }
 
   state = {
-    locate: {"format": "DD/MM/YYYY"}
+    starts_at: moment(),
+    ends_at: moment()
   }
 
   submitForm(event) {
@@ -40,13 +45,6 @@ export class GameForm extends PureComponent {
 
   handleChange = name => event => {
     this.setState({[name]: event.target.value})
-    switch (name) {
-      case 'title':
-        this.validateTitle(event.target.value)
-        break
-      default:
-        return false
-    }
   }
 
   validateTitle(title) {
@@ -91,7 +89,6 @@ export class GameForm extends PureComponent {
       return false
     }
 
-
     this.setState({
       startsAtError: null
     })
@@ -110,8 +107,6 @@ export class GameForm extends PureComponent {
       })
       return false
     }
-
-    console.log(validationMsg);
 
     this.setState({
       startsAtError: null
@@ -139,20 +134,39 @@ export class GameForm extends PureComponent {
       })
     })
     return true
-}
+  }
+
+  handleChangeStartsAt(date) {
+    const startD = new Date(date).getTime()
+    const endD = new Date(this.state.ends_at).getTime()
+
+    if(startD > endD){
+      this.setState({
+          ends_at: date
+      })
+    }
+
+    this.setState({
+        starts_at: date
+    })
+  }
+
+  handleChangeEndsAt(date) {
+    this.setState({
+        ends_at: date
+    })
+  }
 
 onImageDrop(files) {
   this.setState({
     uploadedFile: files[0],
     picUrl: files[0].preview
   })
-  console.log(files[0])
 }
 
   render() {
     const {
-      picUrl,
-      locate
+      picUrl
     } = this.state
     return (
       <Container>
@@ -176,7 +190,6 @@ onImageDrop(files) {
                       )}
                   </Dropzone>
                 </FormGroup>
-
                 <FormGroup row>
                 <Label for="title" sm={4}>Title</Label>
                 <Col sm={8}>
@@ -207,31 +220,28 @@ onImageDrop(files) {
                 <FormGroup row>
                 <Label for="starts_at" sm={4}>Starts At</Label>
                 <Col sm={8}>
-                  <Input
-                    locate={locate}
-                    type="date"
-                    name="starts_at"
-                    id="starts_at"
-                    placeholder="Starts At"
-                    onChange={this.handleChange("startsAt").bind(this)}
-                    valid={ !this.state.startsAtError ? null : false }
+
+                  <DatePicker
+                      selected={this.state.starts_at}
+                      onChange={this.handleChangeStartsAt.bind(this)}
+                      dateFormat="DD/MM/YYYY"
+
                   />
-                  <FormFeedback >{ this.state.startsAtError }</FormFeedback>
+                  <FormText>{this.state.startsAtError}</FormText>
                 </Col>
                 </FormGroup>
 
                 <FormGroup row>
                 <Label for="ends_at" sm={4}>Ends At</Label>
                 <Col sm={8}>
-                  <Input
-                    type="date"
-                    name="ends_at"
-                    id="ends_at"
-                    placeholder="Ends At"
-                    onChange={this.handleChange("endsAt").bind(this)}
-                    valid={ !this.state.endsAtError ? null : false }
+
+                  <DatePicker
+                      selected={this.state.ends_at}
+                      onChange={this.handleChangeEndsAt.bind(this)}
+                      dateFormat="DD/MM/YYYY"
+                      minDate={this.state.starts_at}
                   />
-                  <FormFeedback >{ this.state.endsAtError }</FormFeedback>
+                <FormText>{this.state.endsAtError}</FormText>
                 </Col>
                 </FormGroup>
                 <Button type="submit" color="success" >Create</Button>
