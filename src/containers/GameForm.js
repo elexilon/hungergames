@@ -11,7 +11,6 @@ import validate from 'validate.js'
 import Dropzone from 'react-dropzone'
 import request from 'superagent'
 import style from '../styles/GameForm'
-import moment from 'moment'
 
 
 export class GameForm extends PureComponent {

@@ -11,7 +11,6 @@ import { Button
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
-import style from "../styles/Button"
 
 class Lobby extends PureComponent {
   componentWillMount() {
@@ -48,7 +47,7 @@ class Lobby extends PureComponent {
     return (
       <Container className="Lobby">
         <Title content={"Your Games!"} />
-          <Button style={style.buttonStyle} onClick={this.newGame.bind(this)} >
+          <Button color="primary" onClick={this.newGame.bind(this)} >
             New Game
           </Button>
         <Row>
