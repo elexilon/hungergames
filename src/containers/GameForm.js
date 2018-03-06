@@ -20,7 +20,9 @@ export class GameForm extends PureComponent {
     update: PropTypes.func.isRequired
   }
 
-  state = {}
+  state = {
+    locate: {"format": "DD/MM/YYYY"}
+  }
 
   submitForm(event) {
     event.preventDefault()
@@ -149,7 +151,8 @@ onImageDrop(files) {
 
   render() {
     const {
-      picUrl
+      picUrl,
+      locate
     } = this.state
     return (
       <Container>
@@ -205,6 +208,7 @@ onImageDrop(files) {
                 <Label for="starts_at" sm={4}>Starts At</Label>
                 <Col sm={8}>
                   <Input
+                    locate={locate}
                     type="date"
                     name="starts_at"
                     id="starts_at"
