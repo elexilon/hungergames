@@ -36,7 +36,7 @@ class Lobby extends PureComponent {
         playerNumber={ game.players.length }
         starts={ game.starts_at }
         ends={ game.ends_at }
-        urlPic={ game.urlPic }
+        picUrl={ game.picUrl }
         id={ game._id }
       />
     )
@@ -51,7 +51,7 @@ class Lobby extends PureComponent {
             New Game
           </Button>
         <Row>
-          { !games ? null : games.map(game => this.renderGame(games)) }
+          { !games ? null : games.map(game => this.renderGame(game)) }
         </Row>
 
         <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />

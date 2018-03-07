@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-// import create from '../actions/game/create'
+import create from '../actions/game/create'
 // import update from '../actions/game/update'
 import { Container, Row, Col,
         Button, Form, FormGroup, FormText,
@@ -32,15 +32,16 @@ export class GameForm extends PureComponent {
   submitForm(event) {
     event.preventDefault()
 
-    if (this.validateAll(this.state.title, this.state.startsAt)) {
-      if(!this.handleImageUpload(this.state.uploadedFile)) return false
+    if (this.validateAll(this.state.title, this.state.starts_at, this.state.ends_at )) {
+      this.handleImageUpload(this.state.uploadedFile)
     }
     return false
   }
 
-  validateAll(title, startsAt) {
+  validateAll(title, startsAt, endsAt) {
     return this.validateTitle(title) &&
-    this.validateStartsAt(startsAt)
+    this.validateStartsAt(startsAt) &&
+    this.validateEndsAt(endsAt)
   }
 
   handleChange = name => event => {
@@ -126,12 +127,13 @@ export class GameForm extends PureComponent {
         console.error(err)
         return false
       }
-
       this.setState({
         picUrl:
           'https://res.cloudinary.com/elexilon/image/upload/' +
           response.body.public_id
       })
+
+      this.props.create(this.state)
     })
     return true
   }
@@ -254,4 +256,4 @@ onImageDrop(files) {
   }
 }
 
-export default connect(null, { push })(GameForm)
+export default connect(null, { push, create })(GameForm)

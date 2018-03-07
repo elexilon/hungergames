@@ -15,10 +15,10 @@ class GameCard extends PureComponent {
   }
 
   render() {
-    const {playerNumber, starts, ends, urlPic, id} = this.props
+    const {playerNumber, starts, ends, picUrl, id} = this.props
     return (
       <Col sm="4" id={id} >
-        <CardImg top width="100%" src={ urlPic } alt="image" />
+        <CardImg top width="100%" src={ picUrl } alt="image" />
         <Card body>
           <CardText>Player Number: { playerNumber }</CardText>
           <CardText>Starts At: { starts }</CardText>
