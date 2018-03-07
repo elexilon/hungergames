@@ -5,7 +5,6 @@ import Title from '../components/ui/Title'
 import { Container, Row } from 'reactstrap'
 import fetchGames from '../actions/game/fetch'
 import GameCard from '../components/game/GameCard'
-import { Authenticated } from '../actions/user/sign-in'
 import { Button
 } from 'reactstrap'
 import { openModal } from '../actions/modal'
@@ -14,7 +13,6 @@ import ModalDialog from '../components/ui/ModalDialog'
 
 class Lobby extends PureComponent {
   componentWillMount() {
-    this.props.Authenticated()
     this.props.fetchGames()
   }
 
@@ -64,4 +62,4 @@ const mapStateToProps = ({ games, currentUser, modal }) =>
 ({ games, currentUser, modal })
 
 export default connect(mapStateToProps,
-  { Authenticated, push, fetchGames, openModal })(Lobby)
+  { push, fetchGames, openModal })(Lobby)

@@ -35,26 +35,6 @@ export default () => {
   }
 }
 
-export const fetchPlayers = (game) => {
-  return dispatch => {
-    dispatch({ type: APP_LOADING })
-
-    api.get(`/games/${game._id}/players`)
-      .then((result) => {
-        dispatch({ type: APP_DONE_LOADING })
-        dispatch({ type: LOAD_SUCCESS })
-
-      })
-      .catch((error) => {
-        dispatch({ type: APP_DONE_LOADING })
-        dispatch({
-          type: LOAD_ERROR,
-          payload: error.message
-        })
-      })
-  }
-}
-
 export const fetchOneGame = (gameId) => {
   return dispatch => {
     dispatch({ type: APP_LOADING })

@@ -8,6 +8,8 @@ import signOut from '../../actions/user/sign-out'
 import { Collapse, Navbar, NavbarToggler,
   NavbarBrand, Nav, NavItem, Button
 } from 'reactstrap'
+import { Authenticated } from '../../actions/user/sign-in'
+
 
 const TITLE = 'Hunger Games'
 
@@ -21,6 +23,10 @@ class Navigation extends PureComponent {
       modal: false,
     };
 
+  }
+
+  componentWillMount() {
+    this.props.Authenticated()
   }
 
   static propTypes = {
@@ -97,4 +103,4 @@ const mapStateToProps = ({ currentUser, modal }) => ({
   modal
 })
 
-export default connect(mapStateToProps, { push, signOut })(Navigation)
+export default connect(mapStateToProps, { push, signOut, Authenticated })(Navigation)

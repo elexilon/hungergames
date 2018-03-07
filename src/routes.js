@@ -5,6 +5,7 @@ import {
   Lobby,
   SignUp,
   SignIn,
+  Game
 } from './containers'
 
 export default class Routes extends Component {
@@ -14,6 +15,7 @@ export default class Routes extends Component {
         <Route exact path="/" component={Lobby} />
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-in" component={SignIn} />
+        <Route path="/game/:gameId" component={Game} />
       </div>
     )
   }
