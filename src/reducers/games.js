@@ -5,8 +5,10 @@ import { CREATE_GAME  } from '../actions/game/create'
 export default (state = [], { type, payload } = {}) => {
   switch (type) {
     case FETCHED_GAMES :
-    case FETCHED_ONE_GAME :
       return payload
+    case FETCHED_ONE_GAME :
+      const games = state.filter(game => game._id !== payload._id)
+      return games.concat(payload)
 
     case CREATE_GAME :
       return state.concat(payload)

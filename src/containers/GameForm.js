@@ -21,7 +21,21 @@ export class GameForm extends PureComponent {
   static propTypes = {
     push: PropTypes.func.isRequired,
     create: PropTypes.func.isRequired,
-    update: PropTypes.func.isRequired
+    update: PropTypes.bool.isRequired,
+    game: PropTypes.object
+  }
+
+  componentWillMount() {
+    if(!this.props.update) return
+    console.log(moment());
+    this.setState({
+        _id: this.props.game._id,
+        ends_at: moment(this.props.game.ends_at),
+        starts_at: moment(this.props.game.starts_at),
+        title: this.props.game.title,
+        description: this.props.game.description,
+        picUrl: this.props.game.picUrl
+    })
   }
 
   state = {
@@ -53,7 +67,8 @@ export class GameForm extends PureComponent {
       presence: true,
       length: {
         minimum: 2,
-        message: 'Must be at least 2 characters'
+        maximun: 12,
+        message: 'Must be at least 2 characters and maximun 12'
       }
     })
 
@@ -159,12 +174,12 @@ export class GameForm extends PureComponent {
     })
   }
 
-onImageDrop(files) {
-  this.setState({
-    uploadedFile: files[0],
-    picUrl: files[0].preview
-  })
-}
+  onImageDrop(files) {
+    this.setState({
+      uploadedFile: files[0],
+      picUrl: files[0].preview
+    })
+  }
 
   render() {
     const {
@@ -201,6 +216,7 @@ onImageDrop(files) {
                     placeholder="Title"
                     onChange={this.handleChange("title").bind(this)}
                     valid={ !this.state.titleError ? null : false }
+                    value={ this.state.title }
                   />
                 <FormFeedback >{ this.state.titleError }</FormFeedback>
                 </Col>
@@ -215,6 +231,7 @@ onImageDrop(files) {
                     id="description"
                     placeholder="Description"
                     onChange={this.handleChange("description").bind(this)}
+                    value={ this.state.description }
                   />
                 </Col>
                 </FormGroup>

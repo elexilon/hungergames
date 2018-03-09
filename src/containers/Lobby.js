@@ -55,7 +55,10 @@ class Lobby extends PureComponent {
           { !games ? null : games.map((game) => this.renderGame(game)) }
         </Row>
 
-        <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
+        <ModalDialog
+          isOpen={ modal }
+          body={ <GameForm update={false} /> }
+          title="New Game" />
       </Container>
     )
   }

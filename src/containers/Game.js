@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Button } from 'reactstrap'
-import fetchOneGame from '../actions/game/fetch'
+import { fetchOneGame } from '../actions/game/fetch'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
 
 class Game extends PureComponent {
   componentWillMount() {
-    this.props.fetchOneGame()
+    this.props.fetchOneGame(this.props.match.params.gameId)
   }
 
   goToGame = gameId => event => this.props.push(`/play/${gameId}`)
@@ -27,11 +27,12 @@ class Game extends PureComponent {
 
   render() {
     const { game, showEdit, modal } = this.props
-    console.log(game);
     if(!game) return null
+
     return (
       <Container className="Lobby">
         <Title content={game.title} />
+          <img src={game.picUrl} className="img-fluid" alt={game.title} />
           { showEdit ?
             <Button color="primary" onClick={this.newGame.bind(this)} >
               Edit
@@ -39,15 +40,21 @@ class Game extends PureComponent {
           }
 
 
-        <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
+        <ModalDialog
+          isOpen={ modal }
+          body={ <GameForm
+            game={game}
+            update={true}
+            /> }
+          title="New Game" />
       </Container>
     )
   }
 }
 
 const mapStateToProps = ({ games, currentUser, modal }, { match }) => {
-const game = games.filter(game => game._id === match.params.gameId )
-const showEdit = games.userId === currentUser._id
+const game = games.filter(game => game._id === match.params.gameId )[0]
+const showEdit = !!game && game.userId === currentUser._id
 return (
   {
     game,
