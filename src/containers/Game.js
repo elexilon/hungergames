@@ -27,6 +27,8 @@ class Game extends PureComponent {
 
   render() {
     const { game, showEdit, modal } = this.props
+    console.log(game);
+    if(!game) return null
     return (
       <Container className="Lobby">
         <Title content={game.title} />

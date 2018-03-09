@@ -10,6 +10,7 @@ import { Button
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
+import './Lobby.css'
 
 class Lobby extends PureComponent {
   componentWillMount() {
@@ -31,6 +32,8 @@ class Lobby extends PureComponent {
   renderGame = (game) => {
     return (
       <GameCard
+        key={game._id}
+        title={game.title}
         playerNumber={ game.players.length }
         starts={ game.starts_at }
         ends={ game.ends_at }
@@ -45,11 +48,11 @@ class Lobby extends PureComponent {
     return (
       <Container className="Lobby">
         <Title content={"Your Games!"} />
-          <Button color="primary" onClick={this.newGame.bind(this)} >
+          <Button className="NewGameButton" color="primary" onClick={this.newGame.bind(this)} >
             New Game
           </Button>
         <Row>
-          { !games ? null : games.map(game => this.renderGame(game)) }
+          { !games ? null : games.map((game) => this.renderGame(game)) }
         </Row>
 
         <ModalDialog isOpen={ modal } body={ <GameForm /> } title="New Game" />
