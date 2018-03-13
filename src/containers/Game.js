@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Button } from 'reactstrap'
-import { fetchOneGame } from '../actions/game/fetch'
+import { fetchOneGame } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
@@ -44,7 +44,6 @@ class Game extends PureComponent {
           isOpen={ modal }
           body={ <GameForm
             game={game}
-            update={true}
             /> }
           title="New Game" />
       </Container>

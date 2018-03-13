@@ -2,8 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import create from '../actions/game/create'
-// import update from '../actions/game/update'
+import { create, update } from '../actions/game'
 import { Container, Row, Col,
         Button, Form, FormGroup, FormText,
         Label, Input, FormFeedback
@@ -21,13 +20,12 @@ export class GameForm extends PureComponent {
   static propTypes = {
     push: PropTypes.func.isRequired,
     create: PropTypes.func.isRequired,
-    update: PropTypes.bool.isRequired,
+    update: PropTypes.func.isRequired,
     game: PropTypes.object
   }
 
   componentWillMount() {
-    if(!this.props.update) return
-    console.log(moment());
+    if(!this.props.game) return
     this.setState({
         _id: this.props.game._id,
         ends_at: moment(this.props.game.ends_at),
@@ -40,16 +38,19 @@ export class GameForm extends PureComponent {
 
   state = {
     starts_at: moment(),
-    ends_at: moment()
+    ends_at: moment(),
+    title: ""
   }
 
   submitForm(event) {
     event.preventDefault()
-
     if (this.validateAll(this.state.title, this.state.starts_at, this.state.ends_at )) {
-      this.handleImageUpload(this.state.uploadedFile)
+      if(!this.state._id){
+        this.props.create(this.state)
+      } else {
+        this.props.update(this.state)
+      }
     }
-    return false
   }
 
   validateAll(title, startsAt, endsAt) {
@@ -67,7 +68,7 @@ export class GameForm extends PureComponent {
       presence: true,
       length: {
         minimum: 2,
-        maximun: 12,
+        maximum: 12,
         message: 'Must be at least 2 characters and maximun 12'
       }
     })
@@ -131,26 +132,27 @@ export class GameForm extends PureComponent {
   }
 
   handleImageUpload(file) {
-    if(!file) return
-    let upload = request
-      .post(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL)
-      .field('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-      .field('file', file)
+    if(!!file){
+      let upload = request
+        .post(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL)
+        .field('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+        .field('file', file)
 
-    upload.end((err, response) => {
-      if (err) {
-        console.error(err)
-        return false
-      }
-      this.setState({
-        picUrl:
-          'https://res.cloudinary.com/elexilon/image/upload/' +
-          response.body.public_id
+      upload.end((err, response) => {
+        if (err) {
+          console.error(err)
+          return false
+        }
+        this.setState({
+          picUrl:
+            'https://res.cloudinary.com/elexilon/image/upload/' +
+            response.body.public_id
+        })
       })
+    }
 
-      this.props.create(this.state)
-    })
-    return true
+
+
   }
 
   handleChangeStartsAt(date) {
@@ -176,9 +178,10 @@ export class GameForm extends PureComponent {
 
   onImageDrop(files) {
     this.setState({
-      uploadedFile: files[0],
-      picUrl: files[0].preview
+      uploadedFile: files[0]
     })
+
+    this.handleImageUpload(files[0])
   }
 
   render() {
@@ -273,4 +276,4 @@ export class GameForm extends PureComponent {
   }
 }
 
-export default connect(null, { push, create })(GameForm)
+export default connect(null, { push, create, update })(GameForm)

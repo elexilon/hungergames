@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Row } from 'reactstrap'
-import fetchGames from '../actions/game/fetch'
+import { fetchGames } from '../actions/game'
 import GameCard from '../components/game/GameCard'
 import { Button
 } from 'reactstrap'
