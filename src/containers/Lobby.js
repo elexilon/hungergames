@@ -48,9 +48,9 @@ class Lobby extends PureComponent {
     return (
       <Container className="Lobby">
         <Title content={"Your Games!"} />
-          <Button className="NewGameButton" color="primary" onClick={this.newGame.bind(this)} >
-            New Game
-          </Button>
+        <Button className="NewGameButton" color="primary" onClick={this.newGame.bind(this)} >
+          New Game
+        </Button>
         <Row>
           { !games ? null : games.map((game) => this.renderGame(game)) }
         </Row>

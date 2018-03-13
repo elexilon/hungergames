@@ -266,8 +266,11 @@ export class GameForm extends PureComponent {
                 <FormText>{this.state.endsAtError}</FormText>
                 </Col>
                 </FormGroup>
-                <Button type="submit" color="success" >Create</Button>
-
+                {
+                  !!this.state._id ?
+                  <Button type="submit" color="success" >Update</Button> :
+                  <Button type="submit" color="success" >Create</Button>
+                }
               </Col>
             </Row>
           </Form>
