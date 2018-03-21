@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
-import { Container, Button, Row, FormText, Label, Col, FormGroup  } from 'reactstrap'
+import { Container, Button, Row, FormText, Label, Col, FormGroup, 
+  FormFeedback, Input, Form  } from 'reactstrap'
 import { fetchOneGame } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
@@ -18,6 +19,11 @@ class Game extends PureComponent {
 
   state = {
     date: null
+  }
+
+  submitForm(event) {
+    event.preventDefault()
+
   }
 
   goToGame = gameId => event => this.props.push(`/play/${gameId}`)
@@ -41,7 +47,11 @@ class Game extends PureComponent {
   isWeekEnd = date => {
     const day = date.day()
     return day !== 1 && day !== 2 && day !== 3 && day !== 4 && day !== 5
-};
+  }
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value })
+  }
 
   render() {
     const { game, showEdit, modal } = this.props
@@ -58,26 +68,42 @@ class Game extends PureComponent {
         <Row>
 
         </Row>
-          <img style={{ width: 300, height: 300}} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />
-        <Row>
+          <Col sm={8}>
+          <img style={{ width: 300 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />
+          </Col>
+        
 
+          
+          <Form onSubmit={this.submitForm.bind(this)}>
+            <Row>
+              <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <Label for="ends_at" className="mr-sm-2" >Date</Label>
+                  <DatePicker
+                      selected={this.state.date}
+                      onChange={this.handleChangeDate.bind(this)}
+                      dateFormat="DD/MM/YYYY"
+                      minDate={moment(game.starts_at)}
+                      maxDate={moment(game.ends_at)}
+                      filterDate={this.isWeekEnd}
+                  />
+                  <FormText>{this.state.endsAtError}</FormText>
+              </FormGroup>
 
-
-          <FormGroup row>
-            <Label for="ends_at" sm={4}>Date</Label>
-            <Col sm={8}>
-              <DatePicker
-                  selected={this.state.date}
-                  onChange={this.handleChangeDate.bind(this)}
-                  dateFormat="DD/MM/YYYY"
-                  minDate={moment(game.starts_at)}
-                  maxDate={moment(game.ends_at)}
-                  filterDate={this.isWeekEnd}
-              />
-              <FormText>{this.state.endsAtError}</FormText>
-            </Col>
-          </FormGroup>
-        </Row>
+              <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+                <Label for="Weight" className="mr-sm-2">Weight</Label>
+                  <Input
+                    name="weight"
+                    id="weight"
+                    placeholder="Weight"
+                    onChange={this.handleChange("weight").bind(this)}
+                    valid={!this.state.weightError ? null : false}
+                    value={this.state.weight}
+                    />
+                <FormFeedback >{this.state.weightError}</FormFeedback>
+              </FormGroup>
+            </Row>
+          </Form>
+        
         <ModalDialog
           isOpen={ modal }
           body={ <GameForm
