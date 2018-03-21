@@ -244,6 +244,7 @@ export class GameForm extends PureComponent {
                 <Col sm={8}>
 
                   <DatePicker
+                      className="form-control"
                       selected={this.state.starts_at}
                       onChange={this.handleChangeStartsAt.bind(this)}
                       dateFormat="DD/MM/YYYY"
@@ -258,6 +259,7 @@ export class GameForm extends PureComponent {
                 <Col sm={8}>
 
                   <DatePicker
+                      className="form-control"
                       selected={this.state.ends_at}
                       onChange={this.handleChangeEndsAt.bind(this)}
                       dateFormat="DD/MM/YYYY"

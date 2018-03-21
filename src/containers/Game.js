@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
-import { Container, Button, Row, FormText, Label, Col, FormGroup, 
+import { Container, Button, Row, FormText, Label, FormGroup, 
   FormFeedback, Input, Form  } from 'reactstrap'
 import { fetchOneGame } from '../actions/game'
 import { openModal } from '../actions/modal'
@@ -18,7 +18,8 @@ class Game extends PureComponent {
   }
 
   state = {
-    date: null
+    date: null,
+    weight: ""
   }
 
   submitForm(event) {
@@ -39,6 +40,8 @@ class Game extends PureComponent {
   }
 
   handleChangeDate(date) {
+    console.log(date);
+    
     this.setState({
         date: date
     })
@@ -58,7 +61,7 @@ class Game extends PureComponent {
     if(!game) return null
 
     return (
-      <Container className="Lobby">
+      <Container  >
         <Title content={game.title} />
         { showEdit ?
           <Button className="NewGameButton" color="primary" onClick={this.editGame.bind(this)} >
@@ -68,17 +71,16 @@ class Game extends PureComponent {
         <Row>
 
         </Row>
-          <Col sm={8}>
-          <img style={{ width: 300 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />
-          </Col>
-        
+
+          <img style={{ height: 300, marginBottom: 30 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />      
 
           
-          <Form onSubmit={this.submitForm.bind(this)}>
+          <Form inline onSubmit={this.submitForm.bind(this)}>
             <Row>
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="ends_at" className="mr-sm-2" >Date</Label>
                   <DatePicker
+                      className="form-control"
                       selected={this.state.date}
                       onChange={this.handleChangeDate.bind(this)}
                       dateFormat="DD/MM/YYYY"
@@ -101,6 +103,8 @@ class Game extends PureComponent {
                     />
                 <FormFeedback >{this.state.weightError}</FormFeedback>
               </FormGroup>
+
+              <Button type="submit" color="success" >Send</Button>
             </Row>
           </Form>
         
