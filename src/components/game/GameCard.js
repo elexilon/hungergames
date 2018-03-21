@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { CardText,
-        Card, CardImg, Col
+        Card, CardImg
 } from 'reactstrap'
 import './GameCard.css'
 import moment from 'moment'
@@ -29,7 +29,7 @@ class GameCard extends PureComponent {
     const endFormat = moment(ends).format('DD/MM/YYYY')
     const gamePath = '/game/' + this.props.id
     return (
-      <Col sm="4" key={id} >
+      <div className="col-12 col-md-4" key={id} >
         <Link to={gamePath}>
         <CardImg top width="100%" height="300px" src={ picUrl } alt={ title } />
         </Link>
@@ -41,7 +41,7 @@ class GameCard extends PureComponent {
           <CardText>Starts At: { startFormat }</CardText>
           <CardText>Ends At: { endFormat }</CardText>
         </Card>
-      </Col>
+      </div>
     )
   }
 }

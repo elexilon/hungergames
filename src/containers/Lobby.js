@@ -51,7 +51,7 @@ class Lobby extends PureComponent {
         <Button className="NewGameButton" color="primary" onClick={this.newGame.bind(this)} >
           New Game
         </Button>
-        <Row>
+        <Row >
           { !games ? null : games.map((game) => this.renderGame(game)) }
         </Row>
 
