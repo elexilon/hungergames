@@ -11,6 +11,7 @@ import ModalDialog from '../components/ui/ModalDialog'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
+import validate from 'validate.js'
 
 class Game extends PureComponent {
   componentWillMount() {
@@ -24,7 +25,64 @@ class Game extends PureComponent {
 
   submitForm(event) {
     event.preventDefault()
+    if (this.validateAll(this.state.weight, this.state.date)) {
 
+    }
+  }
+
+  validateAll(weight, date) {
+    return this.validateWeigt(weight) &&
+      this.validateDate(date)
+  }
+
+  validateWeigt(weight) {
+    const validationMsg = validate.single(weight, {
+      presence: true,
+      numericality: true
+    })
+    if (!!validationMsg) {
+      this.setState({
+        weightError: validationMsg
+      })
+      return false
+    }
+
+    if (validate.isNumber(weight)) {
+      this.setState({
+        weightError: "Must be a number"
+      })
+      return false
+    }
+
+    this.setState({
+      weightError: null
+    })
+    return true
+  }
+
+  validateDate(date) {
+    const validationMsg = validate.single(date, {
+      presence: true
+    })
+
+    if (!!validationMsg) {
+      this.setState({
+        dateError: validationMsg
+      })
+      return false
+    }
+
+    if (!validate.isDate(new Date(date))) {
+      this.setState({
+        dateError: "Must be a valid date"
+      })
+      return false
+    }
+
+    this.setState({
+      dateError: null
+    })
+    return true
   }
 
   goToGame = gameId => event => this.props.push(`/play/${gameId}`)
@@ -40,8 +98,6 @@ class Game extends PureComponent {
   }
 
   handleChangeDate(date) {
-    console.log(date);
-    
     this.setState({
         date: date
     })
@@ -78,30 +134,29 @@ class Game extends PureComponent {
           <Form inline onSubmit={this.submitForm.bind(this)}>
             <Row>
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                <Label for="ends_at" className="mr-sm-2" >Date</Label>
-                  <DatePicker
-                      className="form-control"
-                      selected={this.state.date}
-                      onChange={this.handleChangeDate.bind(this)}
-                      dateFormat="DD/MM/YYYY"
-                      minDate={moment(game.starts_at)}
-                      maxDate={moment(game.ends_at)}
-                      filterDate={this.isWeekEnd}
+                <Label for="Weight" className="mr-sm-2">Weight</Label>
+                <Input
+                  name="weight"
+                  id="weight"
+                  placeholder="Weight"
+                  onChange={this.handleChange("weight").bind(this)}
+                  value={this.state.weight}
                   />
-                  <FormText>{this.state.endsAtError}</FormText>
+                <FormText>{this.state.weightError}</FormText>
               </FormGroup>
 
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-                <Label for="Weight" className="mr-sm-2">Weight</Label>
-                  <Input
-                    name="weight"
-                    id="weight"
-                    placeholder="Weight"
-                    onChange={this.handleChange("weight").bind(this)}
-                    valid={!this.state.weightError ? null : false}
-                    value={this.state.weight}
-                    />
-                <FormFeedback >{this.state.weightError}</FormFeedback>
+                <Label for="date" className="mr-sm-2" >Date</Label>
+                <DatePicker
+                  className="form-control"
+                  selected={this.state.date}
+                  onChange={this.handleChangeDate.bind(this)}
+                  dateFormat="DD/MM/YYYY"
+                  minDate={moment(game.starts_at)}
+                  maxDate={moment(game.ends_at)}
+                  filterDate={this.isWeekEnd}
+                />
+                <FormText>{this.state.dateError}</FormText>
               </FormGroup>
 
               <Button type="submit" color="success" >Send</Button>
