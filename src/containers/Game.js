@@ -132,6 +132,40 @@ class Game extends PureComponent {
     });
   }
 
+  renderDate(date, index) {
+    return (
+      <div index={date}>
+        <Button id={date} onClick={this.toggle(date).bind(this)}>
+          Launch Popover
+          </Button>
+{
+  //TODO: create a popover for each date
+}
+        {/* <Popover placement="bottom" isOpen={this.state.Popover1} target={weight.date} toggle={this.toggle(weight.date).bind(this)}>
+          <PopoverBody>
+            <Button color="success" >Send</Button>
+          </PopoverBody>
+        </Popover> */}
+
+
+      </div>
+    )
+  }
+
+  renderWeight(weight, index)
+  {
+    return (
+      <div index={weight._id}>
+        <Popover placement="bottom" isOpen={this.state.Popover1} target={weight.date} toggle={this.toggle(weight.date).bind(this)}>
+          <PopoverBody>
+            <Button color="success" >Send</Button>
+          </PopoverBody>
+        </Popover>
+      </div>
+    )
+  }
+
+
   render() {
     const { game, showEdit, modal } = this.props
     if(!game) return null
@@ -178,16 +212,7 @@ class Game extends PureComponent {
           </Form>
 
 
-        <div>
-          <Button id="Popover1" onClick={this.toggle("Popover1").bind(this)}>
-            Launch Popover
-          </Button>
-          <Popover placement="bottom" isOpen={this.state.Popover1} target="Popover1" toggle={this.toggle("Popover1").bind(this)}>
-            <PopoverBody>
-              <Button color="success" >Send</Button>
-            </PopoverBody>
-          </Popover>
-        </div>
+        
 
 
         <ModalDialog
