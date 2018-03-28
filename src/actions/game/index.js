@@ -1,6 +1,6 @@
 import  create, { CREATE_GAME } from './create'
 import fetchGames, { fetchOneGame, FETCHED_GAMES, FETCHED_ONE_GAME } from './fetch'
-import update, { UPDATE_GAME } from './update'
+import update, { UPDATE_GAME, updateWeight } from './update'
 
 export {
   create,
@@ -10,5 +10,6 @@ export {
   FETCHED_GAMES,
   FETCHED_ONE_GAME,
   update,
-  UPDATE_GAME
+  UPDATE_GAME,
+  updateWeight
 }

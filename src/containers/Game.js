@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Button, Row, FormText, Label, FormGroup, 
-  FormFeedback, Input, Form  } from 'reactstrap'
-import { fetchOneGame } from '../actions/game'
+  Input, Form, Popover, PopoverBody  } from 'reactstrap'
+import { fetchOneGame, updateWeight } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
@@ -18,15 +18,29 @@ class Game extends PureComponent {
     this.props.fetchOneGame(this.props.match.params.gameId)
   }
 
-  state = {
-    date: null,
-    weight: ""
+  constructor(props) {
+    super(props);
+
+
+    this.state = {
+      date: null,
+      weight: ""
+    }
   }
+
+  
 
   submitForm(event) {
     event.preventDefault()
-    if (this.validateAll(this.state.weight, this.state.date)) {
-
+    const { updateWeight, game, currentUser } = this.props
+    const { weight, date } = this.state
+    if (this.validateAll(weight, date)) {
+      const newWeight = { 
+        userId: currentUser._id,
+        weight: Number(weight),
+        date: new Date(date)
+       }
+      updateWeight(newWeight, game._id)
     }
   }
 
@@ -112,6 +126,12 @@ class Game extends PureComponent {
     this.setState({ [name]: event.target.value })
   }
 
+  toggle = name => event => {
+    this.setState({
+      [name]: !this.state[name]
+    });
+  }
+
   render() {
     const { game, showEdit, modal } = this.props
     if(!game) return null
@@ -124,15 +144,10 @@ class Game extends PureComponent {
             Edit
           </Button> : null
         }
-        <Row>
-
-        </Row>
-
-          <img style={{ height: 300, marginBottom: 30 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />      
-
-          
+        <Row />
+          <img style={{ height: 300, marginBottom: 30 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} /> 
           <Form inline onSubmit={this.submitForm.bind(this)}>
-            <Row>
+            
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
                 <Label for="Weight" className="mr-sm-2">Weight</Label>
                 <Input
@@ -158,11 +173,23 @@ class Game extends PureComponent {
                 />
                 <FormText>{this.state.dateError}</FormText>
               </FormGroup>
-
-              <Button type="submit" color="success" >Send</Button>
-            </Row>
+            
+          <Button type="submit" color="success" >Send</Button>
           </Form>
-        
+
+
+        <div>
+          <Button id="Popover1" onClick={this.toggle("Popover1").bind(this)}>
+            Launch Popover
+          </Button>
+          <Popover placement="bottom" isOpen={this.state.Popover1} target="Popover1" toggle={this.toggle("Popover1").bind(this)}>
+            <PopoverBody>
+              <Button color="success" >Send</Button>
+            </PopoverBody>
+          </Popover>
+        </div>
+
+
         <ModalDialog
           isOpen={ modal }
           body={ <GameForm
@@ -187,4 +214,4 @@ return (
 }
 
 export default connect(mapStateToProps,
-  { push, fetchOneGame, openModal })(Game)
+  { push, fetchOneGame, openModal, updateWeight })(Game)

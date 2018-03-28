@@ -37,7 +37,7 @@ class GameCard extends PureComponent {
           <Link to={gamePath}>
             <CardText className="GameCardTitle" >{ title }</CardText>
           </Link>
-          <CardText>Player Number: { playerNumber }</CardText>
+          <CardText>Number of Players: { playerNumber }</CardText>
           <CardText>Starts At: { startFormat }</CardText>
           <CardText>Ends At: { endFormat }</CardText>
         </Card>
