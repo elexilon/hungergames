@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Button, Row, FormText, Label, FormGroup, 
-  Input, Form, Popover, PopoverBody  } from 'reactstrap'
+  Input, Form, Popover, PopoverBody, ListGroupItem, ListGroup,
+  Card, CardText   } from 'reactstrap'
 import { fetchOneGame, updateWeight } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
@@ -13,6 +14,17 @@ import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import validate from 'validate.js'
 
+
+function getFilterDates(game) {
+  return game.weights
+    .map(weight => weight.date)
+    .filter((date, index, self) => {
+      return self.indexOf(date) === index;
+    })
+    .sort((a, b) => moment(b).valueOf() - moment(a).valueOf());
+}
+
+
 class Game extends PureComponent {
   componentWillMount() {
     this.props.fetchOneGame(this.props.match.params.gameId)
@@ -20,15 +32,11 @@ class Game extends PureComponent {
 
   constructor(props) {
     super(props);
-
-
     this.state = {
       date: null,
       weight: ""
     }
   }
-
-  
 
   submitForm(event) {
     event.preventDefault()
@@ -119,7 +127,7 @@ class Game extends PureComponent {
 
   isWeekEnd = date => {
     const day = date.day()
-    return day !== 1 && day !== 2 && day !== 3 && day !== 4 && day !== 5
+    return day !== 1 && day !== 2 && day !== 3 && day !== 4 && day !== 5 && day !== 0
   }
 
   handleChange = name => event => {
@@ -133,20 +141,26 @@ class Game extends PureComponent {
   }
 
   renderDate(date, index) {
-    return (
-      <div index={date}>
-        <Button id={date} onClick={this.toggle(date).bind(this)}>
-          Launch Popover
-          </Button>
-{
-  //TODO: create a popover for each date
-}
-        {/* <Popover placement="bottom" isOpen={this.state.Popover1} target={weight.date} toggle={this.toggle(weight.date).bind(this)}>
-          <PopoverBody>
-            <Button color="success" >Send</Button>
-          </PopoverBody>
-        </Popover> */}
+    const popo = "popo"
+    const weights = this.props.game.weights
+      .filter(weight => weight.date === date)
+      .sort((a, b) => a - b)
 
+    return (
+      <div style={{ marginTop: 20 }} key={popo + index}>
+        <ListGroupItem 
+          style={{ color: "white", textAlign: "center", backgroundColor: "#ff6600", cursor: "pointer"}} 
+          id={popo + index} 
+          onClick={this.toggle(popo + index).bind(this)
+        }>
+          <b>{moment(date).format("DD/MM/YYYY")}</b>
+        </ListGroupItem>
+
+        <Popover placement="bottom" isOpen={this.state[popo + index]} target={popo + index} toggle={this.toggle(popo + index).bind(this)}>
+          <PopoverBody>
+            {weights.map(weight => this.renderWeight(weight))}
+          </PopoverBody>
+        </Popover>
 
       </div>
     )
@@ -155,20 +169,19 @@ class Game extends PureComponent {
   renderWeight(weight, index)
   {
     return (
-      <div index={weight._id}>
-        <Popover placement="bottom" isOpen={this.state.Popover1} target={weight.date} toggle={this.toggle(weight.date).bind(this)}>
-          <PopoverBody>
-            <Button color="success" >Send</Button>
-          </PopoverBody>
-        </Popover>
+      <div key={weight.userId}>
+        {weight.userId}
+        {weight.weight}
+        <Button color="success" >Send</Button>
       </div>
     )
   }
 
-
   render() {
     const { game, showEdit, modal } = this.props
     if(!game) return null
+
+    const dates = getFilterDates(game)
 
     return (
       <Container  >
@@ -178,8 +191,26 @@ class Game extends PureComponent {
             Edit
           </Button> : null
         }
-        <Row />
-          <img style={{ height: 300, marginBottom: 30 }} src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} /> 
+
+        <Row style={{ marginBottom: 30 }}>
+          <div className="col-12 col-md-6" >
+            <img src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />
+          </div>
+          <div className="col-12 col-md-6" >
+            <Card body>
+              <CardText>{game.description}</CardText>
+            </Card>
+          </div>
+        </Row> 
+
+        <Row style={{ marginBottom: 30 }}>
+          <div className="col-12" >
+            <Card body>
+              <CardText>{game.description}</CardText>
+            </Card>
+          </div>
+        </Row> 
+
           <Form inline onSubmit={this.submitForm.bind(this)}>
             
               <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
@@ -207,13 +238,14 @@ class Game extends PureComponent {
                 />
                 <FormText>{this.state.dateError}</FormText>
               </FormGroup>
-            
-          <Button type="submit" color="success" >Send</Button>
+            <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+              <Button className="mr-sm-2" type="submit" color="success" >Send</Button>
+            </FormGroup>
           </Form>
 
-
-        
-
+        <ListGroup>
+          { dates.map((date, index) => this.renderDate(date, index)) }
+        </ListGroup>
 
         <ModalDialog
           isOpen={ modal }
@@ -227,7 +259,7 @@ class Game extends PureComponent {
 }
 
 const mapStateToProps = ({ games, currentUser, modal }, { match }) => {
-const game = games.filter(game => game._id === match.params.gameId )[0]
+const game = games.filter(game => game._id === match.params.gameId)[0]
 const showEdit = !!game && game.userId === currentUser._id
 return (
   {

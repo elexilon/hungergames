@@ -1,3 +1,7 @@
 .Navigation {
   text-align: center;
 }
+
+.btn-link {
+  color: white !important;
+}

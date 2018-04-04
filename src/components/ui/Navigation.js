@@ -62,7 +62,7 @@ class Navigation extends PureComponent {
 
         </NavItem>
         <NavItem>
-          <Button color="link" onClick={this.signOut.bind(this)} >
+          <Button style={ NavStyle.navigationButtonStyle } color="link" onClick={this.signOut.bind(this)} >
             sign Out
           </Button>
         </NavItem>
