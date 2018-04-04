@@ -133,6 +133,8 @@ export class GameForm extends PureComponent {
 
   handleImageUpload(file) {
     if(!!file){
+      console.log(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL, file);
+      
       let upload = request
         .post(process.env.REACT_APP_CLOUDINARY_UPLOAD_URL)
         .field('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
