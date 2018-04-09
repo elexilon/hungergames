@@ -4,7 +4,7 @@ import { push } from 'react-router-redux'
 import Title from '../components/ui/Title'
 import { Container, Button, Row, FormText, Label, FormGroup, 
   Input, Form, Popover, PopoverBody, ListGroupItem, ListGroup,
-  Card, CardText   } from 'reactstrap'
+  Card, CardText, Table   } from 'reactstrap'
 import { fetchOneGame, updateWeight } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
@@ -144,7 +144,15 @@ class Game extends PureComponent {
     const popo = "popo"
     const weights = this.props.game.weights
       .filter(weight => weight.date === date)
-      .sort((a, b) => a - b)
+      .map(weight => {
+        const startWeight = this.props.game.weights.filter((wei) =>
+          wei.userId.toString() === weight.userId.toString())
+          .sort((a, b) => moment(a.date).valueOf() - moment(b.date).valueOf())[0].weight
+
+        const diffWeight = weight.weight - startWeight
+        return { ...weight, diffWeight }
+      })
+      .sort((a, b) => a.diffWeight - b.diffWeight)
 
     return (
       <div style={{ marginTop: 20 }} key={popo + index}>
@@ -158,7 +166,18 @@ class Game extends PureComponent {
 
         <Popover placement="bottom" isOpen={this.state[popo + index]} target={popo + index} toggle={this.toggle(popo + index).bind(this)}>
           <PopoverBody>
-            {weights.map(weight => this.renderWeight(weight))}
+            <Table dark striped size="sm" responsive>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Weight</th>
+                  <th>Diff</th>
+                </tr>
+              </thead>
+              <tbody>
+                {weights.map(weight => this.renderWeight(weight))}
+              </tbody>
+            </Table>
           </PopoverBody>
         </Popover>
 
@@ -169,11 +188,11 @@ class Game extends PureComponent {
   renderWeight(weight, index)
   {
     return (
-      <div key={weight.userId}>
-        {weight.userId}
-        {weight.weight}
-        <Button color="success" >Send</Button>
-      </div>
+        <tr key={weight.userId}>
+          <th>{weight.userId}</th>
+          <th>{weight.weight}</th>
+          <th>{weight.diffWeight}</th>
+        </tr>
     )
   }
 
@@ -197,14 +216,6 @@ class Game extends PureComponent {
             <img src={game.picUrl} className="img-fluid img-thumbnail" alt={game.title} />
           </div>
           <div className="col-12 col-md-6" >
-            <Card body>
-              <CardText>{game.description}</CardText>
-            </Card>
-          </div>
-        </Row> 
-
-        <Row style={{ marginBottom: 30 }}>
-          <div className="col-12" >
             <Card body>
               <CardText>{game.description}</CardText>
             </Card>
