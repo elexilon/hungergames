@@ -19,8 +19,8 @@ export class SignUp extends PureComponent {
 
   submitForm(event) {
     event.preventDefault()
-    const {email, password, passwordConfirmation} = this.state
-    if (this.validateAll(email, password, passwordConfirmation)) {
+    const {email, password, passwordConfirmation, name} = this.state
+    if (this.validateAll(email, password, passwordConfirmation, name)) {
       const user = {
         email: email,
         password: password
@@ -34,8 +34,9 @@ export class SignUp extends PureComponent {
     this.props.push('/sign-in')
   }
 
-  validateAll(email, password, passwordConfirmation) {
-    return this.validateEmail(email) &&
+  validateAll(email, password, passwordConfirmation, name) {
+    return this.validateName(name) &&
+      this.validateEmail(email) &&
       this.validatePassword(password) &&
       this.validatePasswordConfirmation(passwordConfirmation)
   }
@@ -45,6 +46,9 @@ export class SignUp extends PureComponent {
     switch (name) {
       case 'email':
         this.validateEmail(event.target.value)
+        break
+      case 'name':
+        this.validateName(event.target.value)
         break
       case 'password':
         this.validatePassword(event.target.value)
@@ -72,6 +76,28 @@ export class SignUp extends PureComponent {
 
     this.setState({
       emailError: null
+    })
+    return true
+  }
+
+  validateName(name) {
+    const validationMsg = validate.single(name, {
+      presence: true,
+      length: {
+        minimum: 6,
+        message: 'must be at least 6 characters'
+      }
+    })
+
+    if (!!validationMsg) {
+      this.setState({
+        nameError: validationMsg
+      })
+      return false
+    }
+
+    this.setState({
+      nameError: null
     })
     return true
   }
@@ -122,6 +148,17 @@ export class SignUp extends PureComponent {
           <Form onSubmit={this.submitForm.bind(this)}>
             <Row>
               <Col sm="12" md={{ size: 8, offset: 2 }}>
+
+                <FormGroup row>
+                  <Label for="name" sm={4}>Name</Label>
+                  <Col sm={8}>
+                    <Input valid={!this.state.nameError ? null : false}
+                      name="name" id="name" placeholder="Name"
+                      onChange={this.handleChange("name").bind(this)}
+                    />
+                    <FormFeedback >{this.state.nameError}</FormFeedback>
+                  </Col>
+                </FormGroup>
 
                 <FormGroup row>
                 <Label for="email" sm={4}>Email</Label>
