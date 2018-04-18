@@ -5,7 +5,7 @@ import Title from '../components/ui/Title'
 import { Container, Button, Row, FormText, Label, FormGroup, 
   Input, Form, Popover, PopoverBody, ListGroupItem, ListGroup,
   Card, CardText, Table   } from 'reactstrap'
-import { fetchOneGame, updateWeight } from '../actions/game'
+import { fetchOneGame, updateWeight, fetchPlayers } from '../actions/game'
 import { openModal } from '../actions/modal'
 import { GameForm } from '../containers'
 import ModalDialog from '../components/ui/ModalDialog'
@@ -15,20 +15,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import validate from 'validate.js'
 import './Game.css'
 
-
-function getFilterDates(game) {
-  return game.weights
-    .map(weight => weight.date)
-    .filter((date, index, self) => {
-      return self.indexOf(date) === index;
-    })
-    .sort((a, b) => moment(b).valueOf() - moment(a).valueOf());
-}
-
-
 class Game extends PureComponent {
   componentWillMount() {
     this.props.fetchOneGame(this.props.match.params.gameId)
+    this.props.fetchPlayers(this.props.match.params.gameId)
   }
 
   constructor(props) {
@@ -37,6 +27,15 @@ class Game extends PureComponent {
       date: null,
       weight: ""
     }
+  }
+
+  getFilterDates(game) {
+    return game.weights
+      .map(weight => weight.date)
+      .filter((date, index, self) => {
+        return self.indexOf(date) === index;
+      })
+      .sort((a, b) => moment(b).valueOf() - moment(a).valueOf());
   }
 
   submitForm(event) {
@@ -149,9 +148,12 @@ class Game extends PureComponent {
         const startWeight = this.props.game.weights.filter((wei) =>
           wei.userId.toString() === weight.userId.toString())
           .sort((a, b) => moment(a.date).valueOf() - moment(b.date).valueOf())[0].weight
+        
+        const name = this.props.players.length === 0 ? "" : this.props.players.filter((player) =>
+          player.userId.toString() === weight.userId.toString())[0].name
 
         const diffWeight = weight.weight - startWeight
-        return { ...weight, diffWeight }
+        return { ...weight, diffWeight, name }
       })
       .sort((a, b) => a.diffWeight - b.diffWeight)
 
@@ -190,7 +192,7 @@ class Game extends PureComponent {
   {
     return (
         <tr key={weight.userId}>
-          <th>{weight.userId}</th>
+          <th>{weight.name}</th>
           <th>{weight.weight}</th>
           <th>{weight.diffWeight}</th>
         </tr>
@@ -201,7 +203,7 @@ class Game extends PureComponent {
     const { game, showEdit, modal } = this.props
     if(!game) return null
 
-    const dates = getFilterDates(game)
+    const dates = this.getFilterDates(game)
 
     return (
       <Container  >
@@ -270,17 +272,19 @@ class Game extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ games, currentUser, modal }, { match }) => {
+const mapStateToProps = ({ games, currentUser, modal, players }, { match }) => {
 const game = games.filter(game => game._id === match.params.gameId)[0]
 const showEdit = !!game && game.userId === currentUser._id
+
 return (
   {
     game,
     currentUser,
     modal,
-    showEdit
+    showEdit,
+    players
   })
 }
 
 export default connect(mapStateToProps,
-  { push, fetchOneGame, openModal, updateWeight })(Game)
+  { push, fetchOneGame, openModal, updateWeight, fetchPlayers })(Game)
