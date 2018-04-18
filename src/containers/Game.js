@@ -13,6 +13,7 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import validate from 'validate.js'
+import './Game.css'
 
 
 function getFilterDates(game) {
